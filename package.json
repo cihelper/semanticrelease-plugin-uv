@@ -1,0 +1,43 @@
+{
+  "name": "@cihelper/semanticrelease-plugin-uv",
+  "version": "1.0.0",
+  "description": "Semantic Release configuration for Python projects using uv",
+  "type": "module",
+  "main": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cihelper/semanticrelease-plugin-uv.git"
+  },
+  "keywords": [
+    "semantic-release-plugin",
+    "python",
+    "uv",
+    "pypi",
+    "github"
+  ],
+  "author": "Mirko Lenz <mirko@mirkolenz.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cihelper/semanticrelease-plugin-uv/issues"
+  },
+  "homepage": "https://github.com/cihelper/semanticrelease-plugin-uv#README",
+  "dependencies": {
+    "@iarna/toml": "^2.2",
+    "execa": "^9.0.0"
+  },
+  "devDependencies": {
+    "@cihelper/semanticrelease-preset-npm": "^1"
+  },
+  "peerDependencies": {
+    "semantic-release": ">=20"
+  },
+  "release": {
+    "extends": "@cihelper/semanticrelease-preset-npm"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
