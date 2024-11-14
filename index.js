@@ -44,12 +44,6 @@ export async function prepare(pluginConfig, context) {
     }
   }
 
-  const pyprojectContent = readFileSync(
-    join(basePath, "pyproject.toml"),
-  ).toString();
-  const pyproject = parse(pyprojectContent);
-  const projectName = pyproject.project.name;
-
   // uv currently has no way to update the version in the pyproject.toml file, so we use sed
   const pyprojectVersionResult = execa(
     "sed",
@@ -68,22 +62,15 @@ export async function prepare(pluginConfig, context) {
   pyprojectVersionResult.stderr.pipe(stderr, { end: false });
   await pyprojectVersionResult;
 
-  const uvlockVersionResult = execa(
-    "sed",
-    [
-      "-i",
-      `/^name = "${projectName}"/{n; s/^version = ".*"/version = "${pepVersion}"/}`,
-      join(basePath, "uv.lock"),
-    ],
-    {
-      cwd: basePath,
-      env,
-      preferLocal: true,
-    },
-  );
-  uvlockVersionResult.stdout.pipe(stdout, { end: false });
-  uvlockVersionResult.stderr.pipe(stderr, { end: false });
-  await uvlockVersionResult;
+  logger.log("Updating the lockfile");
+  const lockResult = execa("uv", ["lock"], {
+    cwd: basePath,
+    env,
+    preferLocal: true,
+  });
+  lockResult.stdout.pipe(stdout, { end: false });
+  lockResult.stderr.pipe(stderr, { end: false });
+  await lockResult;
 
   logger.log("Creating pypi package version %s", version);
   const buildresult = execa("uv", ["build"], {
