@@ -55,7 +55,7 @@ export async function prepare(pluginConfig, context) {
     "sed",
     [
       "-i",
-      `s/^version = ".*"/version = "${pepVersion}"/`,
+      `s/^version = ".*"$/version = "${pepVersion}"/`,
       join(basePath, "pyproject.toml"),
     ],
     {
