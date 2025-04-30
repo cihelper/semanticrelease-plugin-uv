@@ -44,33 +44,14 @@ export async function prepare(pluginConfig, context) {
     }
   }
 
-  // uv currently has no way to update the version in the pyproject.toml file, so we use sed
-  const pyprojectVersionResult = execa(
-    "sed",
-    [
-      "-i",
-      `s/^version = ".*"$/version = "${pepVersion}"/`,
-      join(basePath, "pyproject.toml"),
-    ],
-    {
-      cwd: basePath,
-      env,
-      preferLocal: true,
-    },
-  );
-  pyprojectVersionResult.stdout.pipe(stdout, { end: false });
-  pyprojectVersionResult.stderr.pipe(stderr, { end: false });
-  await pyprojectVersionResult;
-
-  logger.log("Updating the lockfile");
-  const lockResult = execa("uv", ["lock"], {
+  const versionResult = execa("uv", ["version", pepVersion], {
     cwd: basePath,
     env,
     preferLocal: true,
   });
-  lockResult.stdout.pipe(stdout, { end: false });
-  lockResult.stderr.pipe(stderr, { end: false });
-  await lockResult;
+  versionResult.stdout.pipe(stdout, { end: false });
+  versionResult.stderr.pipe(stderr, { end: false });
+  await versionResult;
 
   logger.log("Creating pypi package version %s", version);
   const buildresult = execa("uv", ["build"], {
